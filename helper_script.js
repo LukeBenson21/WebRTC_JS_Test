@@ -129,3 +129,7 @@ function createdDescription(description, peerUuid) {
     })
     .catch(errorHandler);
 }
+
+function errorHandler(error) {
+  console.log(error);
+}
