@@ -23,7 +23,7 @@ function start() {
 function start() {
   //need to find a way to assign each client a unique ID - could use players network identity. Something like ...
   console.log("Before getting the network manager");
-  localUuid = "_" + Math.random().toString(36).substring(2, 9);
+  localUuid = "_" + Math.random().toString(36).substring(2, 11);
   //localUuid = window.unityInstance.SendMessage(
   //"NetworkManager",
   //"GetNetworkIdentity"
