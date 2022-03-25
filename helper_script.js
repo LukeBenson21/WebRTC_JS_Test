@@ -94,7 +94,11 @@ function gotRemoteStream(event, peerUuid) {
   //vidElement.setAttribute('autoplay', '');
   //vidElement.setAttribute('muted', '');
   //vidElement.srcObject = event.streams[0];
-
+  var audioElement = document.createElement("audio");
+  audioElement.setAttribute("autoplay","");
+  audioElement.setAttribute("id",peerUuid);
+  audioElement.srcObject = event.streams[0];
+  document.getElementsByTagName("body")[0].appendChild(audioElement);
   //var vidContainer = document.createElement('div');
   //vidContainer.setAttribute('id', 'remoteVideo_' + peerUuid);
   //vidContainer.setAttribute('class', 'videoContainer');
