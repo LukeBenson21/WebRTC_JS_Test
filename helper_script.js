@@ -95,8 +95,8 @@ function gotRemoteStream(event, peerUuid) {
   //vidElement.setAttribute('muted', '');
   //vidElement.srcObject = event.streams[0];
   var audioElement = document.createElement("audio");
-  audioElement.setAttribute("autoplay","");
-  audioElement.setAttribute("id",peerUuid);
+  audioElement.setAttribute("autoplay", "");
+  audioElement.setAttribute("id", peerUuid);
   audioElement.srcObject = event.streams[0];
   document.getElementsByTagName("body")[0].appendChild(audioElement);
   //var vidContainer = document.createElement('div');
@@ -137,4 +137,18 @@ function createdDescription(description, peerUuid) {
 
 function errorHandler(error) {
   console.log(error);
+}
+
+function muteMic() {
+  if (localStream.enabled == false) {
+    document.getElementById("MicButton").val = "Mute Microphone";
+    localStream.enabled = true;
+    console.log("Microphone Unmuted:");
+    console.log("Microphone state: enabled = " + localStream.enabled);
+  } else {
+    document.getElementById("MicButton").val = "Unmute Microphone";
+    localStream.enabled = false;
+    console.log("Microphone Muted:");
+    console.log("Microphone state: enabled = " + localStream.enabled);
+  }
 }
