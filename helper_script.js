@@ -140,15 +140,16 @@ function errorHandler(error) {
 }
 
 function muteMic() {
-  if (localStream.enabled == false) {
+  micState = localStream.getAudioTracks()[0];
+  if (micState == false) {
     document.getElementById("MicButton").val = "Mute Microphone";
-    localStream.enabled = true;
+    micState.enabled = true;
     console.log("Microphone Unmuted:");
-    console.log("Microphone state: enabled = " + localStream.enabled);
+    console.log("Microphone state: enabled = " + micState.enabled);
   } else {
     document.getElementById("MicButton").val = "Unmute Microphone";
-    localStream.enabled = false;
+    micState.enabled = false;
     console.log("Microphone Muted:");
-    console.log("Microphone state: enabled = " + localStream.enabled);
+    console.log("Microphone state: enabled = " + micState.enabled);
   }
 }
