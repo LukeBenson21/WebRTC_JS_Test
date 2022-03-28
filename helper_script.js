@@ -140,16 +140,23 @@ function errorHandler(error) {
 }
 
 function muteMic() {
-  micState = localStream.getAudioTracks()[0];
-  if (micState == false) {
+  console.log(
+    "Initial microphone state: enabled = " +
+      localStream.getAudioTracks()[0].enabled
+  );
+  if (localStream.getAudioTracks()[0].enabled == false) {
     document.getElementById("MicButton").val = "Mute Microphone";
-    micState.enabled = true;
+    localStream.getAudioTracks()[0].enabled = true;
     console.log("Microphone Unmuted:");
-    console.log("Microphone state: enabled = " + micState.enabled);
+    console.log(
+      "Microphone state: enabled = " + localStream.getAudioTracks()[0].enabled
+    );
   } else {
     document.getElementById("MicButton").val = "Unmute Microphone";
-    micState.enabled = false;
+    localStream.getAudioTracks()[0].enabled = false;
     console.log("Microphone Muted:");
-    console.log("Microphone state: enabled = " + micState.enabled);
+    console.log(
+      "Microphone state: enabled = " + localStream.getAudioTracks()[0].enabled
+    );
   }
 }
