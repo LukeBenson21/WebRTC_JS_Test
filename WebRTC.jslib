@@ -7,26 +7,19 @@ var localStream;
 var serverConnection;
 var peerConnections = {}; // key is uuid, values are peer connection object and user defined display name string
 
-// const peerConnectionConfig = {
-//   iceServers: [
-//     { urls: "stun:stun.services.mozilla.com" },
-//     { urls: "stun:stun.l.google.com:19302" },
-//   ],
-// };
-
 const peerConnectionConfig = {
   iceServers: [
     {
-            'urls': "turn:breached-testing.icedcoffee.dev:7777",
-            'username': 'test123',
-            'credential': 'test',
+      urls: "turn:breached-coturn.icedcoffee.dev:7777",
+      username: "test123",
+      credential: "test",
     },
     //{ urls: "stun:stun.services.mozilla.com" },
   ],
 };
 
 //mergeInto(LibraryManager.library, {
-function start() {
+function Hello() {
   window.alert("Hello world");
 }
 
@@ -63,7 +56,8 @@ function start() {
       // set up websocket and message all existing clients
       .then(function () {
         //serverConnection = new WebSocket('wss://' + window.location.hostname + ':' + WS_PORT);
-        serverConnection = new WebSocket("wss://breached-webrtc.icedcoffee.dev:7777"
+        serverConnection = new WebSocket(
+          "wss://breached-webrtc.icedcoffee.dev:7777"
         ); //may need to add port
         serverConnection.onmessage = gotMessageFromServer;
         serverConnection.onopen = function (event) {

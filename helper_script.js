@@ -81,6 +81,7 @@ function checkPeerDisconnect(event, peerUuid) {
   console.log(`connection with peer ${peerUuid} ${state}`);
   if (state === "failed" || state === "closed" || state === "disconnected") {
     delete peerConnections[peerUuid];
+    //start();
     //document.getElementById('videos').removeChild(document.getElementById('remoteVideo_' + peerUuid));7
     //We need to handle voice here in unity
   }
@@ -89,26 +90,20 @@ function checkPeerDisconnect(event, peerUuid) {
 function gotRemoteStream(event, peerUuid) {
   console.log(`got remote stream, peer ${peerUuid}`);
   console.log(event.streams[0]);
-  //assign stream to new HTML video element
-  //var vidElement = document.createElement('video');
-  //vidElement.setAttribute('autoplay', '');
-  //vidElement.setAttribute('muted', '');
-  //vidElement.srcObject = event.streams[0];
+
   var audioElement = document.createElement("audio");
   audioElement.setAttribute("autoplay", "");
   audioElement.setAttribute("id", peerUuid);
+  //Create a Gobal Varible to track if in water or not
+  //Include condition to check if true..
+  // if so apply filter
+  //add effect to the incoming audio hear
+  //Online says we need reduce the audio tracks by 3-5db
+  //Look at peaking propertiy
+  //https://stackoverflow.com/questions/63538384/webrtc-suppress-lower-sounds
+
   audioElement.srcObject = event.streams[0];
   document.getElementsByTagName("body")[0].appendChild(audioElement);
-  //var vidContainer = document.createElement('div');
-  //vidContainer.setAttribute('id', 'remoteVideo_' + peerUuid);
-  //vidContainer.setAttribute('class', 'videoContainer');
-  //vidContainer.appendChild(vidElement);
-  //vidContainer.appendChild(makeLabel(peerConnections[peerUuid].displayName));
-
-  //document.getElementById('videos').appendChild(vidContainer);
-  // something like UnityInstance.SendMessage(MicManager,initiliase_other_player_voice,event.streams[0])
-  // or
-  // deal with audio in javascript and play outloud
 }
 
 function gotIceCandidate(event, peerUuid) {
