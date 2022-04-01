@@ -29,7 +29,7 @@ function start() {
   //need to find a way to assign each client a unique ID - could use players network identity. Something like ...
   console.log("Before getting the network manager");
   localUuid = "_" + Math.random().toString(36).substring(2, 11);
-  inWater = false;
+  inWater = true;
   //localUuid = window.unityInstance.SendMessage(
   //"NetworkManager",
   //"GetNetworkIdentity"
@@ -48,6 +48,8 @@ function start() {
       .then(function (stream) {
         if (inWater == true) {
           //Gets microphone input
+          var AudioContext = window.AudioContext || window.webkitAudioContext;
+          var context = new AudioContext();
           var microphone = context.createMediaStreamSource(stream);
           //Gets bubble audio from html
           var backgroundMusic = context.createMediaElementSource(
