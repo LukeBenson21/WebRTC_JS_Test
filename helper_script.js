@@ -101,7 +101,6 @@ function gotRemoteStream(event, peerUuid) {
   //Online says we need reduce the audio tracks by 3-5db
   //Look at peaking propertiy
   //https://stackoverflow.com/questions/63538384/webrtc-suppress-lower-sounds
-
   audioElement.srcObject = event.streams[0];
   document.getElementsByTagName("body")[0].appendChild(audioElement);
 }
@@ -153,5 +152,18 @@ function muteMic() {
     console.log(
       "Microphone state: enabled = " + localStream.getAudioTracks()[0].enabled
     );
+  }
+}
+
+function changeWaterState() {
+  console.log("\n In Water = " + inWater);
+  if (inWater == false) {
+    document.getElementById("water").val = "Go out of water";
+    inWater = true;
+    console.log("New water state = " + inWater);
+  } else {
+    document.getElementById("water").val = "Go into Water";
+    inWater = false;
+    console.log("New water state = " + inWater);
   }
 }

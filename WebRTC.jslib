@@ -5,6 +5,7 @@ var localUuid;
 var localDisplayName;
 var localStream;
 var serverConnection;
+var inWater;
 var peerConnections = {}; // key is uuid, values are peer connection object and user defined display name string
 
 const peerConnectionConfig = {
@@ -28,6 +29,7 @@ function start() {
   //need to find a way to assign each client a unique ID - could use players network identity. Something like ...
   console.log("Before getting the network manager");
   localUuid = "_" + Math.random().toString(36).substring(2, 11);
+  inWater = false;
   //localUuid = window.unityInstance.SendMessage(
   //"NetworkManager",
   //"GetNetworkIdentity"
@@ -44,7 +46,24 @@ function start() {
     navigator.mediaDevices
       .getUserMedia(constraints)
       .then(function (stream) {
-        localStream = stream;
+        if (inWater == true) {
+          //Gets microphone input
+          var microphone = context.createMediaStreamSource(stream);
+          //Gets bubble audio from html
+          var backgroundMusic = context.createMediaElementSource(
+            document.getElementById("bubbles")
+          );
+          //Assigns a destination to send both of the audio
+          var destination = context.createMediaStreamDestination();
+          microphone.connect(backgroundMusic);
+          //backgroundMusic.connect(microphone);
+          backgroundMusic.connect(destination);
+          localStream = destination;
+        } else {
+          //standard stream
+          localStream = stream;
+        }
+
         console.log("Got MediaStream:", stream);
         //window.unityInstance.SendMessage("MicManager", "MicRecieved");
       })
