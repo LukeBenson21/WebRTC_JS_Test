@@ -50,29 +50,34 @@ function start() {
         if (inWater == true) {
           var AudioContext = window.AudioContext || window.webkitAudioContext;
           var context = new AudioContext();
-          //Creates microphone as a source
+          //Constructs sources as a source
           var microphone = context.createMediaStreamSource(stream);
-          //var outputMic = context.createMediaStreamSource(localStream);
           var gainNode = context.createGain();
           var backgroundMusic = context.createMediaElementSource(
             document.getElementById("bubbles")
           );
-          var merger = context.createChannelMerger(3);
+          var merger = context.createChannelMerger(4);
           var destination = context.createMediaStreamDestination();
+          var biquadFilter = context.createBiquadFilter();
 
           console.log(microphone);
-          console.log("\n music " + backgroundMusic);
+          console.log("\n music " + backgroundMusic.mediaElement);
           //Drops gain by 3 decibles
-          gainNode.gain.value = -3;
+          gainNode.gain.value = -5;
           console.log(gainNode);
+          //lowpass at 1000hz
+          biquadFilter.type = "lowpass";
+          biquadFilter.frequency.value = 1000;
+          console.log(biquadFilter);
           //connects to merger
           microphone.connect(merger);
           gainNode.connect(merger);
           backgroundMusic.connect(merger);
+          biquadFilter.connect(merger);
 
           merger.connect(destination);
           localStream = destination.stream;
-          //console.log("local stream = " + localStream);
+          console.log("local stream = " + localStream);
         } else {
           //standard stream
           localStream = stream;
