@@ -79,11 +79,12 @@ function start() {
           //localStream = destination.stream;
           //console.log("local stream = " + localStream);
 
-          microphone.connect(biquadFilter);
-          biquadFilter.connect(merger, 0, 0);
+          //microphone.connect(biquadFilter);
+          microphone.connect(merger, 0, 0);
           backgroundMusic.connect(merger, 0, 1);
-          merger.connect(destination);
-          localStream = destination.stream;
+          merger.connect(biquadFilter);
+          biquadFilter.connect(destination);
+          localStream = biquadFilter.stream;
         } else {
           //standard stream
           localStream = stream;
