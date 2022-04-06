@@ -79,8 +79,8 @@ function start() {
           //localStream = destination.stream;
           //console.log("local stream = " + localStream);
 
-          biquadFilter.connect(microphone);
-          microphone.connect(destination);
+          microphone.connect(biquadFilter);
+          biquadFilter.connect(destination);
           localStream = destination.stream;
         } else {
           //standard stream
