@@ -84,7 +84,7 @@ function start() {
           backgroundMusic.connect(merger, 0, 1);
           merger.connect(biquadFilter);
           biquadFilter.connect(destination);
-          localStream = biquadFilter.stream;
+          localStream = destination.stream;
         } else {
           //standard stream
           localStream = stream;
