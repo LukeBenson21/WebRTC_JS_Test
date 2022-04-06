@@ -53,10 +53,10 @@ function start() {
           //Constructs sources as a source
           var microphone = context.createMediaStreamSource(stream);
           //var gainNode = context.createGain();
-          // var backgroundMusic = context.createMediaElementSource(
-          //   document.getElementById("bubbles")
-          // );
-          //var merger = context.createChannelMerger(4);
+          var backgroundMusic = context.createMediaElementSource(
+            document.getElementById("bubbles")
+          );
+          var merger = context.createChannelMerger(2);
           var destination = context.createMediaStreamDestination();
           var biquadFilter = context.createBiquadFilter();
 
@@ -80,9 +80,9 @@ function start() {
           //console.log("local stream = " + localStream);
 
           microphone.connect(biquadFilter);
-          //backgroundMusic.connect(biquadFilter);
-          biquadFilter.connect(destination);
-
+          biquadFilter.connect(merger, 0);
+          backgroundMusic.connect(merger, 1);
+          merger.connect(destination);
           localStream = destination.stream;
         } else {
           //standard stream
