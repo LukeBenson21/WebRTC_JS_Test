@@ -51,11 +51,13 @@ function start() {
           var AudioContext = window.AudioContext || window.webkitAudioContext;
           var context = new AudioContext();
           //Constructs sources as a source
+          const bubblesAudio = new Audio("bubbles.wav");
           var microphone = context.createMediaStreamSource(stream);
           //var gainNode = context.createGain();
-          var backgroundMusic = context.createMediaElementSource(
-            document.getElementById("bubbles")
-          );
+          // var backgroundMusic = context.createMediaElementSource(
+          //   document.getElementById("bubbles")
+          // );
+          var backgroundMusic = context.createMediaElementSource(bubblesAudio);
           var merger = context.createChannelMerger(2);
           var destination = context.createMediaStreamDestination();
           var biquadFilter = context.createBiquadFilter();
