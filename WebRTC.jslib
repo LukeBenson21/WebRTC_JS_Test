@@ -52,32 +52,36 @@ function start() {
           var context = new AudioContext();
           //Constructs sources as a source
           var microphone = context.createMediaStreamSource(stream);
-          var gainNode = context.createGain();
-          var backgroundMusic = context.createMediaElementSource(
-            document.getElementById("bubbles")
-          );
-          var merger = context.createChannelMerger(4);
+          //var gainNode = context.createGain();
+          // var backgroundMusic = context.createMediaElementSource(
+          //   document.getElementById("bubbles")
+          // );
+          //var merger = context.createChannelMerger(4);
           var destination = context.createMediaStreamDestination();
           var biquadFilter = context.createBiquadFilter();
 
           console.log(microphone);
-          console.log("\n music " + backgroundMusic.mediaElement);
+          //console.log("\n music " + backgroundMusic.mediaElement);
           //Drops gain by 3 decibles
-          gainNode.gain.value = -5;
-          console.log(gainNode);
+          // gainNode.gain.value = -5;
+          // console.log(gainNode);
           //lowpass at 1000hz
           biquadFilter.type = "lowpass";
           biquadFilter.frequency.value = 1000;
           console.log(biquadFilter);
           //connects to merger
-          microphone.connect(merger);
-          gainNode.connect(merger);
-          backgroundMusic.connect(merger);
-          biquadFilter.connect(merger);
+          // microphone.connect(merger);
+          // gainNode.connect(merger);
+          // backgroundMusic.connect(merger);
+          // biquadFilter.connect(merger);
 
-          merger.connect(destination);
+          //merger.connect(destination);
+          //localStream = destination.stream;
+          //console.log("local stream = " + localStream);
+
+          biquadFilter.connect(microphone);
+          microphone.connect(destination);
           localStream = destination.stream;
-          console.log("local stream = " + localStream);
         } else {
           //standard stream
           localStream = stream;
