@@ -71,6 +71,7 @@ function start() {
           biquadFilter.type = "lowpass";
           biquadFilter.frequency.value = 1000;
           console.log(biquadFilter);
+          bubblesAudio.play();
           //connects to merger
           // microphone.connect(merger);
           // gainNode.connect(merger);
