@@ -52,6 +52,7 @@ function start() {
           var context = new AudioContext();
           //Constructs sources as a source
           const bubblesAudio = new Audio("bubbles.wav");
+          bubblesAudio.crossOrigin = "anonymous";
           var microphone = context.createMediaStreamSource(stream);
           //var gainNode = context.createGain();
           // var backgroundMusic = context.createMediaElementSource(
