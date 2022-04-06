@@ -1,5 +1,6 @@
 //from https://www.dmcinfo.com/latest-thinking/blog/id/9852/multi-user-video-chat-with-webrtc
-// check if have to import WebSocket stuff
+//check if have to import WebSocket stuff
+//Mic effects https://www.html5rocks.com/en/tutorials/webaudio/intro/
 
 var localUuid;
 var localDisplayName;
@@ -47,20 +48,29 @@ function start() {
       .getUserMedia(constraints)
       .then(function (stream) {
         if (inWater == true) {
-          //Gets microphone input
           var AudioContext = window.AudioContext || window.webkitAudioContext;
           var context = new AudioContext();
+          //Creates microphone as a source
           var microphone = context.createMediaStreamSource(stream);
-          //Gets bubble audio from html
+          var gainNode = context.createGain();
           var backgroundMusic = context.createMediaElementSource(
             document.getElementById("bubbles")
           );
-          //Assigns a destination to send both of the audio
+          var merger = context.createChannelMerger(3);
           var destination = context.createMediaStreamDestination();
-          microphone.connect(backgroundMusic);
-          //backgroundMusic.connect(microphone);
-          backgroundMusic.connect(destination);
+
+          console.log(microphone);
+          console.log("\n music " + backgroundMusic);
+          //Drops gain by 3 decibles
+          gainNode.gain.value = -3;
+          console.log(gainNode);
+
+          microphone.connect(merger);
+          gainNode.connect(merger);
+          backgroundMusic.connect(merger);
+          merger.connect(destination);
           localStream = destination;
+          console.log("local stream = " + localStream);
         } else {
           //standard stream
           localStream = stream;
