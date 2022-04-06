@@ -52,6 +52,7 @@ function start() {
           var context = new AudioContext();
           //Creates microphone as a source
           var microphone = context.createMediaStreamSource(stream);
+          //var outputMic = context.createMediaStreamSource(localStream);
           var gainNode = context.createGain();
           var backgroundMusic = context.createMediaElementSource(
             document.getElementById("bubbles")
@@ -64,13 +65,14 @@ function start() {
           //Drops gain by 3 decibles
           gainNode.gain.value = -3;
           console.log(gainNode);
-
+          //connects to merger
           microphone.connect(merger);
           gainNode.connect(merger);
           backgroundMusic.connect(merger);
+
           merger.connect(destination);
-          localStream = destination;
-          console.log("local stream = " + localStream);
+          localStream = destination.stream;
+          //console.log("local stream = " + localStream);
         } else {
           //standard stream
           localStream = stream;
