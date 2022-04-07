@@ -53,9 +53,12 @@ function start() {
 
           //var microphone = context.createMediaStreamSource(stream);
           //var merger = context.createChannelMerger(2);
-
-          bubblesElement = document.querySelector("#bubbles");
-          bubblesElement.setAttribute("autoplay", "");
+          var bubblesElement = document.createElement("audio");
+          bubblesElement.setAttribute("id", "bubbles");
+          bubblesElement.src = "bubbles.wav";
+          bubblesElement.type = "audio/wav";
+          //bubblesElement.setAttribute("autoplay", "");
+          document.getElementsByTagName("body")[0].appendChild(bubblesElement);
           var backgroundMusic =
             context.createMediaElementSource(bubblesElement);
           var destination = context.createMediaStreamDestination();
