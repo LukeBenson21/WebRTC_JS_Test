@@ -48,32 +48,20 @@ function start() {
       .getUserMedia(constraints)
       .then(function (stream) {
         if (inWater == true) {
+          //node constructors
           var AudioContext = window.AudioContext || window.webkitAudioContext;
           var context = new AudioContext();
-
-          //var microphone = context.createMediaStreamSource(stream);
-          //var merger = context.createChannelMerger(2);
-          var bubblesElement = document.createElement("audio");
-          bubblesElement.setAttribute("id", "bubbles");
-          bubblesElement.src = "bubbles.wav";
-          bubblesElement.type = "audio/wav";
-          //bubblesElement.setAttribute("autoplay", "");
-          document.getElementsByTagName("body")[0].appendChild(bubblesElement);
-          var backgroundMusic =
-            context.createMediaElementSource(bubblesElement);
+          var microphone = context.createMediaStreamSource(stream);
           var destination = context.createMediaStreamDestination();
-          //var biquadFilter = context.createBiquadFilter();
-
-          // biquadFilter.type = "lowpass";
-          // biquadFilter.frequency.value = 1000;
-          // console.log(biquadFilter);
-
-          // microphone.connect(merger, 0, 0);
-          // backgroundMusic.connect(merger, 0, 1);
-          // merger.connect(biquadFilter);
-          // biquadFilter.connect(destination);
-          backgroundMusic.connect(destination);
-
+          var biquadFilter = context.createBiquadFilter();
+          //setting values of the filter (causes muffled mic sound)
+          biquadFilter.type = "lowpass";
+          biquadFilter.frequency.value = 1000;
+          console.log(biquadFilter);
+          //connect filter and microphone to destination
+          microphone.connect(biquadFilter);
+          biquadFilter.connect(destination);
+          //assign destination to local stream
           localStream = destination.stream;
         } else {
           //standard stream
