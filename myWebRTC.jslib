@@ -48,26 +48,23 @@ function start() {
       .getUserMedia(constraints)
       .then(function (stream) {
         if (inWater == true) {
+
           var AudioContext = window.AudioContext || window.webkitAudioContext;
           var context = new AudioContext();
+
+
           var microphone = context.createMediaStreamSource(stream);
-          var merger = context.createChannelMerger(2);
-
-          var backgroundMusic = context.createMediaElementSource(
-            document.querySelector("#bubbles")
-          );
           var destination = context.createMediaStreamDestination();
-          var biquadFilter = context.createBiquadFilter();
 
-          biquadFilter.type = "lowpass";
-          biquadFilter.frequency.value = 1000;
-          console.log(biquadFilter);
+          // get the audio element
+          const audioElement = document.querySelector('audio');
+          // pass it into the audio context
+          const track = audioContext.createMediaElementSource(audioElement);
 
-          microphone.connect(merger, 0, 0);
-          backgroundMusic.connect(merger, 0, 1);
-          merger.connect(biquadFilter);
-          biquadFilter.connect(destination);
 
+          microphone.connect(track);
+          //track.connect(audioContext.destination);
+          track.connect(destination);
           localStream = destination.stream;
         } else {
           //standard stream
