@@ -50,40 +50,28 @@ function start() {
         if (inWater == true) {
           var AudioContext = window.AudioContext || window.webkitAudioContext;
           var context = new AudioContext();
-          //Constructs sources as a source
-          const bubblesAudio = new Audio("bubbles.wav");
-          bubblesAudio.crossOrigin = "anonymous";
           var microphone = context.createMediaStreamSource(stream);
-          //var gainNode = context.createGain();
-          // var backgroundMusic = context.createMediaElementSource(
-          //   document.getElementById("bubbles")
-          // );
-          var backgroundMusic = context.createMediaElementSource(bubblesAudio);
           var merger = context.createChannelMerger(2);
+          // const bubblesAudio = new Audio(
+          //   window.document.getElementById("bubbles").play()
+          // );
+          //bubblesAudio.crossOrigin = "anonymous";
+
+          bufferLoader = new BufferLoader(
+            context,
+            ["bubbles.wav"],
+            finishedLoading
+          );
+          bufferLoader.load();
+          var backgroundMusic = context.createBufferSource();
+          backgroundMusic.buffer = bufferList[0];
           var destination = context.createMediaStreamDestination();
           var biquadFilter = context.createBiquadFilter();
 
-          console.log(microphone);
-          //console.log("\n music " + backgroundMusic.mediaElement);
-          //Drops gain by 3 decibles
-          // gainNode.gain.value = -5;
-          // console.log(gainNode);
-          //lowpass at 1000hz
           biquadFilter.type = "lowpass";
           biquadFilter.frequency.value = 1000;
           console.log(biquadFilter);
-          bubblesAudio.play();
-          //connects to merger
-          // microphone.connect(merger);
-          // gainNode.connect(merger);
-          // backgroundMusic.connect(merger);
-          // biquadFilter.connect(merger);
 
-          //merger.connect(destination);
-          //localStream = destination.stream;
-          //console.log("local stream = " + localStream);
-
-          //microphone.connect(biquadFilter);
           microphone.connect(merger, 0, 0);
           backgroundMusic.connect(merger, 0, 1);
           merger.connect(biquadFilter);
