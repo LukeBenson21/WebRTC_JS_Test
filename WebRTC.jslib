@@ -8,6 +8,8 @@ var localStream;
 var serverConnection;
 var inWater;
 var peerConnections = {}; // key is uuid, values are peer connection object and user defined display name string
+var AudioContext;
+var context;
 
 const peerConnectionConfig = {
   iceServers: [
@@ -30,7 +32,11 @@ function start() {
   //need to find a way to assign each client a unique ID - could use players network identity. Something like ...
   console.log("Before getting the network manager");
   localUuid = "_" + Math.random().toString(36).substring(2, 11);
+  AudioContext = window.AudioContext || window.webkitAudioContext;
+  context = new AudioContext();
+  context.resume();
   inWater = true;
+
   //localUuid = window.unityInstance.SendMessage(
   //"NetworkManager",
   //"GetNetworkIdentity"
@@ -47,10 +53,12 @@ function start() {
     navigator.mediaDevices
       .getUserMedia(constraints)
       .then(function (stream) {
-        if (inWater == true) {
+        if (context.state === "running") {
           //node constructors
-          var AudioContext = window.AudioContext || window.webkitAudioContext;
-          var context = new AudioContext();
+          console.log(
+            "--------------------\n FILTERED LOCAL STREAM \n---------------------"
+          );
+
           var microphone = context.createMediaStreamSource(stream);
           var destination = context.createMediaStreamDestination();
           var biquadFilter = context.createBiquadFilter();
@@ -62,9 +70,12 @@ function start() {
           microphone.connect(biquadFilter);
           biquadFilter.connect(destination);
           //assign destination to local stream
-          localStream = destination.stream;
+          localStream = destination.stream || stream;
         } else {
           //standard stream
+          console.log(
+            "--------------------\n STANDARD LOCAL STREAM \n---------------------"
+          );
           localStream = stream;
         }
 
@@ -98,6 +109,21 @@ function start() {
       });
   } else {
     alert("Your browser does not support getUserMedia API");
+  }
+}
+
+function changeWaterState() {
+  console.log("\n In Water = " + inWater);
+  if (inWater == false) {
+    context.resume();
+    document.getElementById("water").val = "Go out of water";
+    inWater = true;
+    console.log("New water state = " + inWater);
+  } else {
+    context.suspend();
+    document.getElementById("water").val = "Go into Water";
+    inWater = false;
+    console.log("New water state = " + inWater);
   }
 }
 //});

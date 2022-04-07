@@ -154,16 +154,3 @@ function muteMic() {
     );
   }
 }
-
-function changeWaterState() {
-  console.log("\n In Water = " + inWater);
-  if (inWater == false) {
-    document.getElementById("water").val = "Go out of water";
-    inWater = true;
-    console.log("New water state = " + inWater);
-  } else {
-    document.getElementById("water").val = "Go into Water";
-    inWater = false;
-    console.log("New water state = " + inWater);
-  }
-}
