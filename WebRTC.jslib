@@ -50,32 +50,25 @@ function start() {
         if (inWater == true) {
           var AudioContext = window.AudioContext || window.webkitAudioContext;
           var context = new AudioContext();
-          var microphone = context.createMediaStreamSource(stream);
-          var merger = context.createChannelMerger(2);
-          // const bubblesAudio = new Audio(
-          //   window.document.getElementById("bubbles").play()
-          // );
-          //bubblesAudio.crossOrigin = "anonymous";
+          //var microphone = context.createMediaStreamSource(stream);
+          //var merger = context.createChannelMerger(2);
 
-          bufferLoader = new BufferLoader(
-            context,
-            ["bubbles.wav"],
-            finishedLoading
+          var backgroundMusic = context.createMediaElementSource(
+            document.querySelector("#bubbles")
           );
-          bufferLoader.load();
-          var backgroundMusic = context.createBufferSource();
-          backgroundMusic.buffer = bufferList[0];
           var destination = context.createMediaStreamDestination();
-          var biquadFilter = context.createBiquadFilter();
+          //var biquadFilter = context.createBiquadFilter();
 
-          biquadFilter.type = "lowpass";
-          biquadFilter.frequency.value = 1000;
-          console.log(biquadFilter);
+          // biquadFilter.type = "lowpass";
+          // biquadFilter.frequency.value = 1000;
+          // console.log(biquadFilter);
 
-          microphone.connect(merger, 0, 0);
-          backgroundMusic.connect(merger, 0, 1);
-          merger.connect(biquadFilter);
-          biquadFilter.connect(destination);
+          // microphone.connect(merger, 0, 0);
+          // backgroundMusic.connect(merger, 0, 1);
+          // merger.connect(biquadFilter);
+          // biquadFilter.connect(destination);
+          backgroundMusic.connect(destination);
+
           localStream = destination.stream;
         } else {
           //standard stream
