@@ -106,7 +106,7 @@ function start() {
 function changeWaterState() { //test with button press first and then can be run with message sent
   if (inWater == false) {
     biquadFilter.type = "lowpass";
-    biquadFilter.frequency.value = 200;
+    biquadFilter.frequency.value = 300;
     microphone.disconnect();
     microphone.connect(biquadFilter);
     biquadFilter.connect(destination);
@@ -120,10 +120,12 @@ function changeWaterState() { //test with button press first and then can be run
     // biquadFilter = context.createBiquadFilter();
     // biquadFilter.type = "allpass"
     microphone.disconnect();
+    biquadFilter.disconnect();
+
     // microphone.connect(biquadFilter);
     // biquadFilter.connect(destination);
     microphone.connect(destination);
-    
+
     localStream = destination.stream;
 
     document.getElementById("water").val = "Go into Water";
