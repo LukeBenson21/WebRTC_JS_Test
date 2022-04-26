@@ -1,45 +1,30 @@
 //from https://www.dmcinfo.com/latest-thinking/blog/id/9852/multi-user-video-chat-with-webrtc
-//check if have to import WebSocket stuff
-//Mic effects https://www.html5rocks.com/en/tutorials/webaudio/intro/
+// check if have to import WebSocket stuff
 
 var localUuid;
 var localDisplayName;
 var localStream;
 var serverConnection;
-var peerConnections = {}; // key is uuid, values are peer connection object and user defined display name string
 
 var inWater;
-var microphone
+var microphone;
 //node constructors
 var AudioContext;
 var context;
 var destination;
 var biquadFilter;
 
-const peerConnectionConfig = {
-  iceServers: [
-    {
-      urls: "turn:breached-coturn.icedcoffee.dev:7777",
-      username: "test123",
-      credential: "test",
-    },
-    //{ urls: "stun:stun.services.mozilla.com" },
-  ],
-};
-
-//mergeInto(LibraryManager.library, {
 function Hello() {
   window.alert("Hello world");
 }
 
 // set up local video stream
 function start() {
-  //need to find a way to assign each client a unique ID - could use players network identity. Something like ...
   localUuid = "_" + Math.random().toString(36).substring(2, 11);
-  inWater = true;
+  inWater = false;
 
   console.log("Network Identity = " + localUuid);
-  localDisplayName = localUuid; //should have a better name here
+  localDisplayName = localUuid; //could have a better name here
 
   var constraints = {
     video: false,
@@ -50,25 +35,28 @@ function start() {
   context = new AudioContext();
   destination = context.createMediaStreamDestination();
   biquadFilter = context.createBiquadFilter();
+  biquadFilter.type = "lowpass";
+  biquadFilter.frequency.value = 450;
 
   if (navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices
       .getUserMedia(constraints)
       .then(function (stream) {
         if (inWater == true) {
-          console.log("in water so starting call stuff")
-          microphone = context.createMediaStreamSource(stream);
           //setting values of the filter (causes muffled mic sound)
-          biquadFilter.type = "lowpass";
-          biquadFilter.frequency.value = 1000;
+
+          microphone = context.createMediaStreamSource(stream);
           //connect filter and microphone to destination
           microphone.connect(biquadFilter);
           biquadFilter.connect(destination);
           //assign destination to local stream
           localStream = destination.stream;
         } else {
+          microphone = context.createMediaStreamSource(stream);
+          microphone.connect(destination);
+
           //standard stream
-          localStream = stream;
+          localStream = destination.stream;
         }
         console.log("Got MediaStream:", stream);
         //window.unityInstance.SendMessage("MicManager", "MicRecieved");
@@ -77,7 +65,6 @@ function start() {
         console.error("Error getting the mic.", errorHandler);
         //window.unityInstance.SendMessage("MicManager", "MicRejected");
       })
-
       // set up websocket and message all existing clients
       .then(function () {
         //serverConnection = new WebSocket('wss://' + window.location.hostname + ':' + WS_PORT);
@@ -94,6 +81,17 @@ function start() {
             })
           );
         };
+
+        //attempt at Reconnect
+        serverConnection.onclose = ws.onclose = function (e) {
+          console.log(
+            "Socket is closed. Reconnect will be attempted in 1 second.",
+            e.reason
+          );
+          setTimeout(function () {
+            start();
+          }, 1000);
+        };
       })
       .catch(function (errorHandler) {
         console.error("Error setting up websocket connection.", errorHandler);
@@ -103,32 +101,68 @@ function start() {
   }
 }
 
-function changeWaterState() { //test with button press first and then can be run with message sent
-  if (inWater == false) {
-    biquadFilter.type = "lowpass";
-    biquadFilter.frequency.value = 200;
-    microphone.disconnect();
-    microphone.connect(biquadFilter);
-    biquadFilter.connect(destination);
-
-    localStream = destination.stream;
-
-    document.getElementById("water").val = "Go out of water";
-    inWater = true;
-    console.log("New water state = " + inWater);
+//Mute Mic button
+function muteMic() {
+  console.log(
+    "Initial microphone state: enabled = " +
+      localStream.getAudioTracks()[0].enabled
+  );
+  if (localStream.getAudioTracks()[0].enabled == false) {
+    localStream.getAudioTracks()[0].enabled = true;
+    console.log("Microphone Unmuted:");
+    console.log(
+      "Microphone state: enabled = " + localStream.getAudioTracks()[0].enabled
+    );
   } else {
-    // biquadFilter = context.createBiquadFilter();
-    // biquadFilter.type = "allpass"
-    microphone.disconnect();
-    // microphone.connect(biquadFilter);
-    // biquadFilter.connect(destination);
-    microphone.connect(destination);
-    
-    localStream = destination.stream;
-
-    document.getElementById("water").val = "Go into Water";
-    inWater = false;
-    console.log("New water state = " + inWater);
+    localStream.getAudioTracks()[0].enabled = false;
+    console.log("Microphone Muted:");
+    console.log(
+      "Microphone state: enabled = " + localStream.getAudioTracks()[0].enabled
+    );
   }
 }
-//});
+
+// waterMic: function () {
+//   if (inWater == false) {
+//     microphone.disconnect();
+
+//     microphone.connect(biquadFilter);
+//     biquadFilter.connect(destination);
+
+//     localStream = destination.stream;
+
+//     inWater = true;
+//     console.log("New water state = " + inWater);
+//   } else {
+//     microphone.disconnect();
+//     biquadFilter.disconnect();
+
+//     microphone.connect(destination);
+
+//     localStream = destination.stream;
+
+//     inWater = false;
+//     console.log("New water state = " + inWater);
+//   }
+// },
+
+function waterMicOn() {
+  microphone.disconnect();
+
+  microphone.connect(biquadFilter);
+  biquadFilter.connect(destination);
+
+  localStream = destination.stream;
+}
+
+function waterMicOff() {
+  microphone.disconnect();
+  biquadFilter.disconnect();
+
+  microphone.connect(destination);
+
+  localStream = destination.stream;
+
+  inWater = false;
+  console.log("New water state = " + inWater);
+}
