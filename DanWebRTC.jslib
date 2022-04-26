@@ -79,6 +79,9 @@ function start() {
       // set up websocket and message all existing clients
       .then(function () {
         //serverConnection = new WebSocket('wss://' + window.location.hostname + ':' + WS_PORT);
+        if (microphone == null) {
+          return;
+        }
         serverConnection = new WebSocket(
           "wss://breached-webrtc.icedcoffee.dev:7777"
         ); //may need to add port
