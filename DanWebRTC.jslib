@@ -5,6 +5,7 @@ var localUuid;
 var localDisplayName;
 var localStream;
 var serverConnection;
+var peerConnections = {}; // key is uuid, values are peer connection object and user defined display name string
 
 var inWater;
 var microphone;
@@ -13,6 +14,17 @@ var AudioContext;
 var context;
 var destination;
 var biquadFilter;
+
+const peerConnectionConfig = {
+  iceServers: [
+    {
+      urls: "turn:breached-coturn.icedcoffee.dev:7777",
+      username: "test123",
+      credential: "test",
+    },
+    //{ urls: "stun:stun.services.mozilla.com" },
+  ],
+};
 
 function Hello() {
   window.alert("Hello world");
