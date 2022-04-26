@@ -48,7 +48,7 @@ function start() {
   destination = context.createMediaStreamDestination();
   biquadFilter = context.createBiquadFilter();
   biquadFilter.type = "lowpass";
-  biquadFilter.frequency.value = 450;
+  biquadFilter.frequency.value = 400;
 
   if (navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices
@@ -56,7 +56,6 @@ function start() {
       .then(function (stream) {
         if (inWater == true) {
           //setting values of the filter (causes muffled mic sound)
-
           microphone = context.createMediaStreamSource(stream);
           //connect filter and microphone to destination
           microphone.connect(biquadFilter);
@@ -115,6 +114,9 @@ function start() {
 
 //Mute Mic button
 function muteMic() {
+  if (microphone == null) {
+    return;
+  }
   console.log(
     "Initial microphone state: enabled = " +
       localStream.getAudioTracks()[0].enabled
@@ -159,6 +161,9 @@ function muteMic() {
 // },
 
 function waterMicOn() {
+  if (microphone == null) {
+    return;
+  }
   microphone.disconnect();
 
   microphone.connect(biquadFilter);
@@ -168,6 +173,9 @@ function waterMicOn() {
 }
 
 function waterMicOff() {
+  if (microphone == null) {
+    return;
+  }
   microphone.disconnect();
   biquadFilter.disconnect();
 
