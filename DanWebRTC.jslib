@@ -51,7 +51,7 @@ function start() {
   gainNode = context.createGain();
   biquadFilter.type = "lowpass";
   biquadFilter.frequency.value = 400;
-  gainNode.gain.value = 0.1;
+  gainNode.gain.value = 1.5;
 
   if (navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices
