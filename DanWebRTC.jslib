@@ -9,6 +9,7 @@ var peerConnections = {}; // key is uuid, values are peer connection object and 
 
 var inWater;
 var microphone;
+var gainNode;
 //node constructors
 var AudioContext;
 var context;
@@ -47,8 +48,10 @@ function start() {
   context = new AudioContext();
   destination = context.createMediaStreamDestination();
   biquadFilter = context.createBiquadFilter();
+  gainNode = context.createGain();
   biquadFilter.type = "lowpass";
   biquadFilter.frequency.value = 400;
+  gainNode.gain.value = 2;
 
   if (navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices
@@ -58,7 +61,8 @@ function start() {
           //setting values of the filter (causes muffled mic sound)
           microphone = context.createMediaStreamSource(stream);
           //connect filter and microphone to destination
-          microphone.connect(biquadFilter);
+          microphone.connect(gainNode);
+          gainNode.connect(biquadFilter);
           biquadFilter.connect(destination);
           //assign destination to local stream
           localStream = destination.stream;
@@ -169,7 +173,8 @@ function waterMicOn() {
   }
   microphone.disconnect();
 
-  microphone.connect(biquadFilter);
+  microphone.connect(gainNode);
+  gainNode.connect(biquadFilter);
   biquadFilter.connect(destination);
 
   localStream = destination.stream;
@@ -181,6 +186,7 @@ function waterMicOff() {
   }
   microphone.disconnect();
   biquadFilter.disconnect();
+  gainNode.disconnect();
 
   microphone.connect(destination);
 
